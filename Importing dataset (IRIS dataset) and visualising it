@@ -1,0 +1,98 @@
+from sklearn import datasets
+import pandas as pd
+
+#importing matplotlib for scatter plot visualising
+import matplotlib.pyplot as plt
+
+'''from sklearn.datasets import load.iris'''
+
+#importing the iris dataset
+iris = datasets.load_iris()
+
+#creating a dataframe to implement the data into
+df  = pd.DataFrame(iris.data, columns=iris.feature_names)
+
+#specically selecting the sepal lenght data from the dataframe
+sepal_length = df['sepal length (cm)']
+
+print(sepal_length)
+
+#use scatter plot to visualise data
+#specify x and y axis, sepal_length and target, respectively
+
+plt.figure(figsize=(8, 6))
+#range(len...) used to determine the lenght and degrees of the axis
+plt.scatter(range(len(sepal_length)), sepal_length, label='Sepal Length')
+plt.xlabel('Sample Index')
+plt.ylabel('Sepal Length (cm)')
+plt.title('Scatter Plot of Sepal Length')
+plt.legend()
+plt.grid(True)
+
+# Show the plot
+plt.show()
+
+------------------------------------------------------------------------------------------
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+
+iris = load_iris()
+
+iris_df = pd.DataFrame(data=iris.data, columns=iris.feature_names)
+iris_df['target'] = iris.target
+
+plt.figure(figsize=(10, 6))
+
+# Group the data by target (flower type) and calculate the mean of sepal length
+mean_sepal_length = iris_df.groupby('target')['sepal length (cm)'].mean()
+
+# Get the target names (flower types)
+target_names = iris.target_names
+
+# Create the scatter plot
+plt.scatter(target_names, mean_sepal_length, c='b', label='Sepal Length')
+plt.xlabel('Flower Type')
+plt.ylabel('Sepal Length (cm)')
+plt.title('Mean Sepal Length for Different Iris Flower Types')
+plt.legend()
+plt.grid(True)
+
+plt.show()
+
+
+
+------------------------------------------------------------------------------------------
+
+
+
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn import datasets
+
+#loading the iris dataset
+iris = datasets.load_iris()
+
+#creating a dataframe to implement the data into
+data = pd.DataFrame(data=iris.data, columns=iris.feature_names)
+
+#assignig our target
+data['target'] = iris.target
+
+# Group the data by the target variable (species) and calculate the mean sepal length for each group.
+sepal_length_by_species = data.groupby('target')['sepal length (cm)'].mean()
+
+# Get the names of the target classes (flower types).
+species_names = [iris.target_names[i] for i in range(len(iris.target_names))]
+
+# Create a bar plot to visualize sepal length by species.
+plt.bar(species_names, sepal_length_by_species)
+plt.xlabel('Flower Type')
+plt.ylabel('Sepal Length (cm)')
+plt.title('Sepal Length by Flower Type')
+
+plt.show()
