@@ -1,0 +1,117 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from google.colab import drive
+
+# Mount Google Drive
+drive.mount('/content/drive')
+
+# Load the dataset from Google Drive
+df = pd.read_csv('/content/drive/My Drive/Cyber Security | 1st Assignment/UNSW_NB15_testing-set.csv')
+
+# Assign a name to the dataset
+combined = pd.concat(
+    [df.assign(source='UNSW_NB15_testing-set.csv')],
+    ignore_index=True
+)
+
+# Due to the large volume of data, this code reads every 10,000th line
+subset = combined.iloc[::10000]
+
+##All the code below is for the purpose of visualising the data in different forms, feel free to remove any irrelevant visualisations.
+#Visualisation: Class Distribution
+class_distribution = subset['attack_cat'].value_counts()
+print("Class distribution:\n", class_distribution)
+
+#Visualisation:Numeric Feature Comparison (e.g., 'sbytes', 'dbytes', 'dur')
+numeric_features = ['sbytes', 'dbytes', 'dur']
+
+for feature in numeric_features:
+    # Summary statistics
+    summary_stats = subset[feature].describe()
+    print(f"Summary statistics for {feature}:\n", summary_stats)
+
+    # Histograms for feature distribution
+    plt.hist(subset[feature], bins=20)
+    plt.title(f'Histogram of {feature}')
+    plt.xlabel('Value')
+    plt.ylabel('Frequency')
+    plt.show()
+
+#Visualisation:Correlation Analysis
+correlation_matrix = subset[numeric_features].corr()
+print("Correlation matrix:\n", correlation_matrix)
+
+#Visualisation:Class-Specific Analysis (comparing 'sbytes' for different attack categories)
+attack_categories = subset['attack_cat'].unique()
+for category in attack_categories:
+    category_subset = subset[subset['attack_cat'] == category]
+    plt.hist(category_subset['sbytes'], bins=20, alpha=0.5, label=category)
+
+plt.title('Comparison of sbytes by Attack Category')
+plt.xlabel('sbytes')
+plt.ylabel('Frequency')
+plt.legend()
+plt.show()
+
+
+#Visualisation:Outlier Detection
+plt.boxplot(subset['sbytes'])
+plt.title('Box Plot of sbytes')
+plt.show()
+
+
+#Visualisation:Box Plots
+# Visualize the distribution of numeric features using box plots
+for feature in numeric_features:
+    sns.boxplot(x='attack_cat', y=feature, data=subset)
+    plt.title(f'Box Plot of {feature} by Attack Category')
+    plt.xlabel('Attack Category')
+    plt.ylabel(feature)
+    plt.xticks(rotation=45)
+    plt.show()
+
+#Visualisation:Pair Plot
+# Create a pair plot to visualize relationships between numeric features
+sns.pairplot(subset[numeric_features], height=2)
+plt.suptitle("Pair Plot of Numeric Features", y=1.02)
+plt.show()
+
+#Visualisation:Heatmap
+# Visualize the correlation matrix as a heatmap
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm')
+plt.title("Correlation Heatmap")
+plt.show()
+
+#Visualisation:Categorical Plots
+# Visualize the relationship between categorical features and the target variable (e.g., 'attack_cat')
+for feature in ['proto', 'service']:
+    sns.countplot(data=subset, x=feature, hue='attack_cat')
+    plt.title(f'Count Plot of {feature} by Attack Category')
+    plt.xlabel(feature)
+    plt.ylabel("Count")
+    plt.xticks(rotation=45)
+    plt.legend(title='Attack Category')
+    plt.show()
+
+#Visualisation:Stacked Bar Chart
+# Visualize the distribution of 'attack_cat' within 'proto' or 'service'
+for feature in ['proto', 'service']:
+    cross_tab = pd.crosstab(subset[feature], subset['attack_cat'])
+    cross_tab.plot(kind='bar', stacked=True, figsize=(10, 6))
+    plt.title(f'Stacked Bar Chart of Attack Categories by {feature}')
+    plt.xlabel(feature)
+    plt.ylabel('Frequency')
+    plt.legend(title='Attack Category', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.show()
+
+#Visualisation:Violin Plot
+# Create violin plots to visualize the distribution of numeric features by 'attack_cat'
+for feature in numeric_features:
+    sns.violinplot(data=subset, x='attack_cat', y=feature)
+    plt.title(f'Violin Plot of {feature} by Attack Category')
+    plt.xlabel('Attack Category')
+    plt.ylabel(feature)
+    plt.xticks(rotation=45)
+    plt.show()
+
