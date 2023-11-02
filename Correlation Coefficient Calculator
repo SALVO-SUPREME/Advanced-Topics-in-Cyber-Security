@@ -1,0 +1,30 @@
+import numpy as np
+
+# Prompt the user to input X and Y values
+x_values = input("Enter the X values separated by spaces: ").split()
+y_values = input("Enter the Y values separated by spaces: ").split()
+
+# Convert the input values to lists of floats
+x_values = [float(x) for x in x_values]
+y_values = [float(y) for y in y_values]
+
+# Calculate the means of X and Y
+x_mean = np.mean(x_values)
+y_mean = np.mean(y_values)
+
+# Calculate the differences from the means
+x_diff = [x - x_mean for x in x_values]
+y_diff = [y - y_mean for y in y_values]
+
+# Calculate the numerator (sum of products)
+numerator = sum(x_diff[i] * y_diff[i] for i in range(len(x_values)))
+
+# Calculate the denominators (sum of squares)
+denom_x = sum(x_diff[i] ** 2 for i in range(len(x_values)))
+denom_y = sum(y_diff[i] ** 2 for i in range(len(y_values)))
+
+# Calculate the correlation coefficient
+correlation_coefficient = numerator / (np.sqrt(denom_x) * np.sqrt(denom_y))
+
+# Print the result
+print(f"The Pearson correlation coefficient (r) is approximately {correlation_coefficient:.2f}")
